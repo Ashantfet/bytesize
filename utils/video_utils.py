@@ -18,7 +18,6 @@ def generate_reels(
     reel_paths = []
 
     for idx, seg in enumerate(segments, 1):
-        # Center the reel around the important segment
         center_time = (seg["start"] + seg["end"]) / 2
 
         start_time = max(0, center_time - clip_duration / 2)
@@ -26,15 +25,13 @@ def generate_reels(
 
         output_path = os.path.join(output_dir, f"reel_{idx}.mp4")
 
-        # ✅ MoviePy v2 method
         clip = video.subclipped(start_time, end_time)
 
+        # ✅ MoviePy v2-compatible call
         clip.write_videofile(
             output_path,
             codec="libx264",
-            audio_codec="aac",
-            verbose=False,
-            logger=None
+            audio_codec="aac"
         )
 
         reel_paths.append(output_path)

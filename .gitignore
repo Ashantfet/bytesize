@@ -2,8 +2,7 @@ venv/
 
 # media files
 input/*.mp4
-output/
-output/**
+output/audio/
 *.wav
 
 # python cache
