@@ -1,38 +1,49 @@
-# 🚀 ByteSize – Automatic Viral Reel Generator
+# 🎬 ByteSize – Automatic Reel Generator with Multimodal AI
 
-**Mastering the Attention Economy with Multimodal AI**
+**Turn long videos into viral-ready short clips automatically.**
 
-ByteSize is a **multimodal AI pipeline** that automatically extracts **high-impact, reel-worthy moments** from long-form videos (lectures, podcasts, interviews) and converts them into **short viral clips**.
+ByteSize is a **multimodal AI system** that analyzes long-form videos (lectures, podcasts, interviews) and automatically extracts **high-impact moments**, converts them into **platform-ready vertical reels**, and overlays **karaoke-style captions** — all with **zero manual editing**.
 
-This project was built as part of the **ByteSize Sage AI Hackathon** and focuses on **engineering clarity, multimodal reasoning, and real video outputs**.
-
----
-
-## 🎯 Problem We Solve
-
-Long-form videos contain valuable insights, but:
-
-* Viewers consume content in **30–60 second bursts**
-* Manually finding highlights is **time-consuming**
-* High-value moments often remain **hidden**
-
-**ByteSize automatically finds and extracts these moments.**
+This project was built for a hackathon to demonstrate **real-world multimodal reasoning, engineering robustness, and creator-focused AI**.
 
 ---
 
-## 🧠 Core Idea (Multimodal Intelligence)
+## 🚀 What Problem Does ByteSize Solve?
 
-We combine **two complementary signals**:
+Long videos contain valuable insights, but:
 
-1. **Audio Energy (How it’s said)**
-   → Detects excitement, emphasis, emotional peaks
-2. **Speech Content (What is said)**
-   → Filters meaningful, advice-driven moments
+* Viewers prefer **30–60 second short-form content**
+* Manually finding highlights is **slow and subjective**
+* Reformatting for **Reels / Shorts / TikTok** is tedious
+* Adding captions takes time
 
-By **fusing audio + text**, ByteSize finds moments that are both:
+**ByteSize automates the entire pipeline.**
 
-* Energetic 🔥
-* Meaningful 🧠
+---
+
+## 🧠 Core Idea (Why This Is Multimodal)
+
+ByteSize fuses **two complementary signals**:
+
+### 🔊 Audio Intelligence (How it’s said)
+
+* Detects **loudness / emphasis peaks**
+* Captures excitement, stress, or importance
+
+### 🧠 Language Understanding (What is said)
+
+* Uses **OpenAI Whisper** to transcribe speech
+* Keeps **word-level timestamps**
+* Filters out filler speech
+
+### 🔗 Multimodal Fusion
+
+Only moments that are:
+
+* **Energetic** (audio peak)
+* **Meaningful** (spoken content)
+
+are selected as highlights.
 
 ---
 
@@ -42,64 +53,50 @@ By **fusing audio + text**, ByteSize finds moments that are both:
 Long Video
    │
    ├── Audio Extraction (ffmpeg)
-   │     └── Loudness Peaks (Librosa RMS)
+   │     └── Loudness Peaks (Librosa)
    │
    ├── Speech-to-Text (Whisper)
-   │     └── Timestamped Transcripts
+   │     └── Timestamped Segments
    │
    ├── Multimodal Fusion
-   │     └── Match Loud Moments with Meaningful Speech
+   │     └── High-Value Moments
    │
-   └── Reel Generation (MoviePy)
-         └── 3–5 Short MP4 Clips
+   ├── Reel Generation (MoviePy)
+   │     ├── Horizontal Clips (16:9)
+   │     ├── Vertical Clips (9:16, zoomed)
+   │     └── Karaoke-Style Captions
+   │
+   └── Streamlit UI (Demo)
 ```
+
+---
+
+## ✨ Key Features
+
+* ✅ Automatic highlight detection
+* ✅ Audio + text multimodal reasoning
+* ✅ Horizontal reels (16:9)
+* ✅ **Vertical reels optimized for Shorts / Reels / TikTok**
+* ✅ **Adaptive zoom & reframing**
+* ✅ **Karaoke-style timed captions**
+* ✅ CLI pipeline + interactive UI
 
 ---
 
 ## ⚙️ Tech Stack
 
 * **Python 3**
-* **ffmpeg** – audio extraction
+* **ffmpeg** – audio & video processing
 * **Librosa** – audio loudness analysis
 * **OpenAI Whisper** – speech-to-text with timestamps
-* **MoviePy** – video cutting & export
+* **MoviePy v2** – video editing & caption overlays
+* **Streamlit** – interactive demo UI
 
 ---
 
-## 🧪 How It Works (Step-by-Step)
+## ▶️ How to Run (CLI Pipeline)
 
-### Phase 1: Video Validation
-
-Ensures the video loads correctly and extracts metadata.
-
-### Phase 2: Audio Loudness Peak Detection
-
-* Computes RMS energy over time
-* Selects top **distinct loudness peaks**
-* These represent **emotional / emphasized moments**
-
-### Phase 3: Transcript Understanding
-
-* Transcribes full video using Whisper
-* Keeps timestamps for every spoken segment
-* Filters out filler speech
-
-### Phase 4: Multimodal Fusion
-
-* Aligns transcript segments near loudness peaks
-* Keeps only **meaningful sentences**
-* Produces final timestamps for reels
-
-### Phase 5: Reel Generation
-
-* Cuts **30–45 second clips**
-* Exports **3–5 MP4 reels** automatically
-
----
-
-## ▶️ How to Run
-
-### 1️⃣ Setup Environment
+### 1️⃣ Setup
 
 ```bash
 python3 -m venv venv
@@ -107,7 +104,7 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-Ensure `ffmpeg` is installed:
+Ensure ffmpeg is installed:
 
 ```bash
 ffmpeg -version
@@ -117,7 +114,7 @@ ffmpeg -version
 
 ### 2️⃣ Add Input Video
 
-Place your test video at:
+Place a long video at:
 
 ```
 input/test_video.mp4
@@ -125,7 +122,7 @@ input/test_video.mp4
 
 ---
 
-### 3️⃣ Run the Pipeline
+### 3️⃣ Run
 
 ```bash
 python main.py
@@ -135,58 +132,84 @@ python main.py
 
 ### 4️⃣ Output
 
-Generated reels will appear in:
-
 ```
 output/clips/
- ├── reel_1.mp4
- ├── reel_2.mp4
- ├── reel_3.mp4
- ├── reel_4.mp4
- └── reel_5.mp4
+├── reel_1.mp4
+├── reel_1_vertical.mp4
+├── reel_1_vertical_captioned.mp4
+├── reel_2_vertical_captioned.mp4
+├── ...
 ```
 
+These files are **directly uploadable** to:
+
+* Instagram Reels
+* YouTube Shorts
+* TikTok
+
 ---
 
-## 🎥 Demo Video
+## 🖥️ How to Run (Streamlit Demo UI)
 
-📌 **A full screen-recording demo is included showing the pipeline running end-to-end and generating reels.**
-(Required by hackathon submission guidelines.)
+```bash
+streamlit run app.py
+```
+
+### What the UI shows:
+
+* Upload video
+* Automatic processing
+* Horizontal reel
+* Vertical reel
+* Captioned vertical reel
+
+This is **judge-friendly and demo-ready**.
 
 ---
 
-## 💡 Why This Project Stands Out
+## 📝 Karaoke-Style Captions (Optional Feature)
 
-* ✅ **True multimodal reasoning** (audio + text)
-* ✅ Handles **real long-form videos**
-* ✅ Produces **actual shareable MP4 outputs**
-* ✅ Clean, explainable engineering decisions
-* ✅ Scales to longer videos easily
+* Captions are generated automatically
+* Timed using Whisper timestamps
+* Sentence-level “karaoke” effect
+* High-contrast text for engagement
 
-This is **not a toy demo** — it reflects how real content-intelligence systems are built.
+> No manual transcription or editing required.
+
+---
+
+## 🧠 Why This Project Stands Out
+
+* ✅ Real multimodal reasoning (not a toy demo)
+* ✅ Handles real long videos
+* ✅ Produces real MP4 outputs
+* ✅ Platform-native formatting
+* ✅ Robust engineering (API changes, edge cases handled)
+* ✅ Clear separation: backend pipeline + UI
 
 ---
 
 ## 🚧 Limitations & Future Work
 
-* Smart vertical cropping (face tracking) – *optional extension*
-* Dynamic captions & hooks – *optional extension*
-* Sentiment scoring / emotion classification
-* GPU acceleration for faster transcription
+* Face-aware smart cropping (MediaPipe)
+* Word-level karaoke highlighting
+* Auto hook text at top
+* Background blur instead of crop
+* GPU acceleration
 
 ---
 
 ## 🏁 Conclusion
 
-**ByteSize** turns a single long video into a **week’s worth of short-form content**, making education and insights more accessible, engaging, and shareable.
+**ByteSize** turns one long video into **multiple viral-ready short clips**, saving creators hours of manual work.
 
-This project demonstrates how **multimodal AI can directly solve real creator problems** with clean engineering and practical outputs.
+It demonstrates how **multimodal AI can directly solve real creator problems** with practical, production-style engineering.
 
 ---
 
-### 👤 Author
+## 👤 Author
 
-**Ashant Kumar** 
-ByteSize Sage AI Hackathon
+**Ashant Kumar**
+Hackathon Submission – ByteSize
 
-
+---

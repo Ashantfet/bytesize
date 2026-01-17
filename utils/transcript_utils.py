@@ -1,22 +1,49 @@
 import whisper
+import subprocess
+import tempfile
+import os
+
+
+def _extract_audio(video_path):
+    """
+    Extract mono 16kHz WAV audio from a video using ffmpeg.
+    This works even if the video has no explicit audio stream.
+    """
+    tmp_wav = tempfile.mktemp(suffix=".wav")
+
+    cmd = [
+        "ffmpeg",
+        "-y",
+        "-i", video_path,
+        "-vn",
+        "-ac", "1",
+        "-ar", "16000",
+        "-acodec", "pcm_s16le",
+        tmp_wav
+    ]
+
+    subprocess.run(
+        cmd,
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL
+    )
+
+    return tmp_wav
 
 
 def transcribe_video(video_path, model_size="base"):
     """
     Transcribe a video file using OpenAI Whisper.
-
-    Args:
-        video_path (str): Path to input video
-        model_size (str): Whisper model size ("tiny", "base", "small", "medium")
-
-    Returns:
-        List of dicts with keys: start, end, text
+    Works for both CLI (main.py) and Streamlit (app.py).
     """
     print("🧠 Loading Whisper model...")
     model = whisper.load_model(model_size)
 
+    print("🎧 Extracting audio for Whisper...")
+    audio_path = _extract_audio(video_path)
+
     print("🎙️ Transcribing audio...")
-    result = model.transcribe(video_path)
+    result = model.transcribe(audio_path)
 
     segments = []
     for seg in result["segments"]:
@@ -25,6 +52,10 @@ def transcribe_video(video_path, model_size="base"):
             "end": float(seg["end"]),
             "text": seg["text"].strip()
         })
+
+    # cleanup temporary audio file
+    if os.path.exists(audio_path):
+        os.remove(audio_path)
 
     return segments
 
@@ -37,15 +68,6 @@ def get_relevant_segments(
 ):
     """
     Match transcript segments near loudness peaks.
-
-    Args:
-        segments (list): Output of transcribe_video
-        peak_times (list): Loudness peak timestamps (seconds)
-        window (int): Time window around peak (± seconds)
-        min_words (int): Minimum words to keep a segment
-
-    Returns:
-        List of selected transcript segments
     """
     selected_segments = []
 
